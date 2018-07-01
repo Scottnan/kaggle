@@ -12,4 +12,4 @@ def category2int(col):
 if __name__ == "__main__":
     df = pd.read_csv("application_train.csv")
     df = df.apply(category2int, axis=0)
-    print(df)
+    df.to_hdf("../clean_data/main_train.h5", key="SK_ID_CURR")
