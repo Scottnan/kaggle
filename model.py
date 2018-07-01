@@ -1,5 +1,6 @@
 import pandas as pd
 import json
+import xgboost as xgb
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import AffinityPropagation
@@ -10,6 +11,7 @@ configs = json.loads(open('config.json').read())
 class KaggleModel(object):
     def __init__(self, configs):
         self.data_path = configs['data']['path']
+        self.model = None
         self.X_train, self.X_test, self.y_train, self.y_test = self.preprocess()
 
     def preprocess(self):
@@ -28,10 +30,12 @@ class KaggleModel(object):
         pass
 
     def classify(self):
-        pass
+        param = {'max_depth': 2, 'eta': 1, 'silent': 1, 'objective': 'binary:logistic'}
+        bst = xgb.train(param, self.X_train, num_round=10)
+        self.model = bst
 
 
 if __name__ == "__main__":
     configs = json.loads(open('config.json').read())
     model = KaggleModel(configs)
-    print(model.data)
+    print(model.X_train)
