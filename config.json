@@ -1,6 +1,5 @@
 {
   "data": {
-    "path": "clean_data/main_train.h5",
-    "predict": "clean_data/main_test.h5"
+    "path": "clean_data/data_train.h5"
   }
 }
