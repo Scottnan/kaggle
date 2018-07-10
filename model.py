@@ -91,7 +91,8 @@ class KaggleModel(object):
                  'eta': 0.1,
                  'silent': 1,
                  'objective': 'binary:logistic',
-                 'eval_metric': 'auc'}
+                 'eval_metric': 'auc',
+                 'scale_pos_weight': 11}
         dtrain = xgb.DMatrix(X, y)
         bst = xgb.train(param, dtrain, num_boost_round=num_boost)
         return bst
@@ -108,7 +109,8 @@ class KaggleModel(object):
                  'eta': 0.1,
                  'silent': 1,
                  'objective': 'binary:logistic',
-                 'eval_metric': 'auc'}
+                 'eval_metric': 'auc',
+                 'scale_pos_weight': 11}
         cv_output = xgb.cv(param, dtrain, num_boost_round=5000, early_stopping_rounds=100, verbose_eval=10,
                            show_stdv=False)
         cv_output[['train-auc-mean', 'test-auc-mean']].plot()
@@ -136,6 +138,12 @@ class KaggleModel(object):
                 except XGBoostError:
                     print('y is only contains {}'.format(np.mean(y)))
         else:
+            num = self.cross_validation(self.X_train, self.y_train)
+            model = self.classify(self.X_train, self.y_train, num)
+            X_ID = self.label_pred[['SK_ID_CURR']]
+            X_ID.to_csv("id.csv")
+            pd.Series(self.predict(model, self.X_predict)).to_csv("predict.csv")
+            '''
             result = pd.DataFrame(columns=['SK_ID_CURR', 'TARGET'])
             for t in range(self.n_clusters_):
                 # train
@@ -160,8 +168,8 @@ class KaggleModel(object):
                 X_ID = self.label_pred.ix[FLAG_pred, 'SK_ID_CURR']
                 pred = pd.DataFrame({'SK_ID_CURR': X_ID, 'TARGET': self.predict(model, X_pred)})
                 result = pd.concat([result, pred])
-
-            result.to_csv("pre.csv", index=False)
+            '''
+            # result.to_csv("pre.csv", index=False)
 
 
 if __name__ == "__main__":
